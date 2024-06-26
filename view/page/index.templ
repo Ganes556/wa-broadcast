@@ -1,0 +1,19 @@
+package view_page
+
+import "github.com/wa-broadcast/view"
+import "github.com/wa-broadcast/view/component"
+
+templ Index() {
+	@view.Layout("Hello") {
+		@view_component.Nav{
+			Link: map[string]string{
+				"About":   "#",
+				"Gallery": "#",
+		}}.Original()
+		
+		<section x-data="{name: ''}">
+			<input x-model="name" type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs"/>
+			<p x-text="'my name is ' + name"></p>
+		</section>
+	}
+}

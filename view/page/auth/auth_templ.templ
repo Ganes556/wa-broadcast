@@ -1,0 +1,46 @@
+package view_auth
+
+import "github.com/wa-broadcast/view"
+
+script wsTarget(target string) {
+    document.addEventListener("htmx:wsAfterMessage", function (event) {
+        let msg = JSON.parse(event.detail.message)
+        if(msg?.context === "success") {            
+            htmx.ajax("POST", "/auth", {
+                target: "#res", 
+                swap:"innerHTML", 
+                values: {token: msg.data},
+                headers: "{ 'Content-Type': 'application/json' }"
+            })
+
+            htmx.on("htmx:afterRequest", function(event) {
+                const xhr = event.detail.xhr;
+                if (xhr.status == 200) {
+                    const redirectUrl = xhr.getResponseHeader("Location");
+                    window.location = redirectUrl;
+                }
+            });
+            return
+        }
+        document.querySelector(target).innerHTML = msg?.data;
+    });
+}
+
+templ Login() {
+	@view.Layout("Login") {
+		<div id="res" class="toast toast-top toast-end"></div>
+		<section class="hero min-h-screen bg-base-200">
+			<div class="hero-content flex-col lg:flex-row-reverse lg:gap-x-10">
+				<div hx-ext="ws" ws-connect="/ws/auth">
+					<div id="auth" hx-swap-oob="innerHTML">
+						<span class="loading loading-spinner loading-lg"></span>
+					</div>
+				</div>
+				<div>
+					<h1 class="text-2xl font-bold">Scan QR to login</h1>
+				</div>
+			</div>
+			@wsTarget("#auth")
+		</section>
+	}
+}

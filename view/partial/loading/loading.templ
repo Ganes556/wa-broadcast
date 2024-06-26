@@ -1,0 +1,20 @@
+package view_partial_loading
+
+templ FullScreen(class, id string) {
+	<style>
+        .htmx-indicator{
+            display:none;
+        }
+        .htmx-request .htmx-indicator{
+            display:inline;
+        }
+        .htmx-request.htmx-indicator{
+            display:inline;
+        }
+    </style>
+	<div id={ id } class={ "fixed bg-gray-500/70 z-50 h-screen w-screen", class }>
+		<div class="flex h-screen w-screen justify-center items-center">
+			<span class="loading loading-dots loading-lg"></span>
+		</div>
+	</div>
+}
