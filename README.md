@@ -1,16 +1,16 @@
 # About
-Web application to broadcast message in WhatsApp, this app use WhatsMeow library to make connection with whatsapp
+A Web application to broadcast message on WhatsApp. This app uses the WhatsMeow package to connect with WhatsApp
 
 # Run Development
-- change .env variable ENVIRONTMENT into "DEVELOPMENT"
-- go to bundle directory and write command `npm run dev`
-- go to root directory and write command `air .`
+- Change `.env` variable `ENVIRONTMENT` to "DEVELOPMENT"
+- Go to `bundle` directory and run command `npm run dev`
+- Go to root directory and run command `air .`
 
 # Run production
-- change .env variable ENVIRONTMENT into "PRODUCTION"
-- go to bundle directory and write command `npm run build`
-- go to root directory and write command `go build -o <filename>`
-- write command `./<filename>.exe`
+- Change `.env` variable `ENVIRONTMENT` to "DEVELOPMENT"
+- Go to `bundle` directory and run command `npm run build`
+- Go to root directory and run command `go build -o <filename>`
+- Run command `./<filename>.exe`
 
 # Technology
 - Go
