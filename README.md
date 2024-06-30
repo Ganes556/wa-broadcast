@@ -3,8 +3,9 @@ A Web application to broadcast message on WhatsApp. This app uses the WhatsMeow 
 
 # Interface
 - Login
-![login](https://github.com/Ganes556/wa-broadcast/blob/master/doc/login.png?raw=true)
-
+![login](https://https://github.com/Ganes556/wa-broadcast/blob/master/doc/login.png)
+- Main
+![main](https://https://github.com/Ganes556/wa-broadcast/blob/master/doc/main.png)
 # Run Development
 - Change `.env` variable `ENVIRONTMENT` to "DEVELOPMENT"
 - Go to `bundle` directory and run command `npm run dev`
