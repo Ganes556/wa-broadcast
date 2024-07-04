@@ -4,8 +4,9 @@ import (
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
-	"github.com/wa-broadcast/internal/pkg"
 	"go.mau.fi/whatsmeow/types"
+
+	"github.com/wa-broadcast/internal/pkg"
 )
 
 type HandlerMiddleware interface {

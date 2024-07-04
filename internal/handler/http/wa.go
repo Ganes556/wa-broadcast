@@ -2,18 +2,21 @@ package handler_http
 
 import (
 	"context"
+	"log"
+	"sync"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
-	"github.com/wa-broadcast/internal/handler"
-	"github.com/wa-broadcast/internal/pkg"
-	view_broadcast "github.com/wa-broadcast/view/page/broadcast"
-	view_partial_alert "github.com/wa-broadcast/view/partial/alert"
 	"go.mau.fi/whatsmeow"
 	"go.mau.fi/whatsmeow/proto/waE2E"
 	"go.mau.fi/whatsmeow/types"
 	"google.golang.org/protobuf/proto"
+
+	"github.com/wa-broadcast/internal/handler"
+	"github.com/wa-broadcast/internal/pkg"
+	view_broadcast "github.com/wa-broadcast/view/page/broadcast"
+	view_partial_alert "github.com/wa-broadcast/view/partial/alert"
 )
 
 type HandlerHttpWA interface {
@@ -52,16 +55,34 @@ func (h *handlerHttpWA) PostWABroadcast(c *fiber.Ctx) error {
 		cl.WaitForConnection(time.Duration(5 * time.Second))
 	}
 
-	for _, v := range req.Numbers {
-		v += "@s.whatsapp.net"
-		jid, err := types.ParseJID(v)
+	// check number
+	jids := make([]types.JID, len(req.Numbers))
+	for i, v := range req.Numbers {
+		parsedJid, err := types.ParseJID(v + "@s.whatsapp.net")
 		if err != nil {
+			log.Println(err)
 			return c.SendString("err")
 		}
-		cl.SendMessage(context.Background(), jid, &waE2E.Message{
-			Conversation: proto.String(req.Message),
-		})
+		jids[i] = parsedJid
 	}
+
+	// sending process
+	wg := new(sync.WaitGroup)
+	guard := make(chan struct{}, 10)
+	wg.Add(len(req.Numbers))
+	for _, jid := range jids {
+		guard <- struct{}{}
+		go func(v types.JID) {
+			defer func() {
+				wg.Done()
+				<-guard
+			}()
+			cl.SendMessage(context.Background(), jid, &waE2E.Message{
+				Conversation: proto.String(req.Message),
+			})
+		}(jid)
+	}
+	wg.Wait()
 	defer cl.Disconnect()
 	return handler.Render(c, view_partial_alert.Alert(200, "success"))
 }

@@ -1,21 +1,30 @@
 package view
 
-import (
-	"os"
-)
+import "os"
 
 templ Layout(title string) {
 	<!DOCTYPE html>
 	<html lang="en" x-data="{theme: $persist(localStorage.getItem('theme') || 'night') }" :data-theme="theme">
-		<head>
+		<head x-data="{ favicon: 'favicon-light.ico' }" x-init="$watch('theme', (value) => {
+      if(value && value === 'light') {
+        favicon = 'favicon.ico'
+      }else {
+        favicon = 'favicon-light.ico'
+      }
+    })">
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<meta name="description" content="Learn how to effectively use WhatsApp Broadcast to reach your audience with targeted messages. Tips, best practices, and tools to enhance your marketing strategy."/>
+			<meta name="keywords" content="WhatsApp Broadcast, WhatsApp Marketing, Broadcast Messaging, Digital Marketing, Audience Engagement"/>
+			<meta name="author" content="TroubleOne"/>
 			if os.Getenv("ENVIRONTMENT") == "PRODUCTION" {
 				<script type="module" src="/build.js"></script>
+        <link rel="icon" type="image/x-icon" href="/favicon.ico">
 			} else {
 				<script type="module" src="http://localhost:5173/main.js"></script>
+        <link rel="icon" type="image/x-icon" class="text-white" :href="'http://localhost:5173/' + favicon">
 			}
-			<title>{ title }</title>
+			<title class="">{ title }</title>
 		</head>
 		<body class="relative">
 			{ children... }
